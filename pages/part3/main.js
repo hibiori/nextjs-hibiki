@@ -42,8 +42,6 @@ const fetchShops = async (keyword, code) => {
 
   const host = process.browser ? '' : API_HOST;
   const res = await fetch(`${host}/api/shops?${query.toString()}`);
-  console.log(res);
-  console.log(`${host}/api/shops?${query.toString()}`);
   return await res.json();
 };
 
@@ -106,7 +104,6 @@ const Shops = ({ firstViewShops, genres }) => {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -173,34 +170,23 @@ const Shops = ({ firstViewShops, genres }) => {
             </Grid>
           );
         })}
-      </Grid>
-      <React.Fragment>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          ランダム結果
-        </Button>
-        <Dialog
-          open={open}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleClose}
-          aria-describedby="alert-dialog-slide-description"
-        >
-          <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
-              {randomShop && (
-                <Typography variant="h6" align="center" gutterBottom>
-                  ランダムに選ばれたショップ: {randomShop.name}
-                </Typography>
-              )}
-            </DialogContentText>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>ランダム結果</DialogTitle>
+          <DialogContent sx={{ minWidth: 300 }}>
+            <Typography variant="h6" align="center" gutterBottom>
+              ランダムに選ばれたショップ
+            </Typography>
+            <Typography variant="h6" align="center" gutterBottom>
+              {randomShop?.name}
+            </Typography>
+            {randomShop && <img src={randomShop.photo.pc.m} alt={randomShop.name} style={{ maxWidth: '100%' }} />}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>OK</Button>
+            <Button onClick={handleClose}>閉じる</Button>
           </DialogActions>
         </Dialog>
-      </React.Fragment>
-
+        ;
+      </Grid>
       <Box
         component="form"
         noValidate
@@ -216,7 +202,13 @@ const Shops = ({ firstViewShops, genres }) => {
           <Button variant="contained" onClick={handleSelectAll}>
             全選択
           </Button>
-          <Button variant="contained" onClick={handleSelectRandom}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleSelectRandom();
+              handleClickOpen();
+            }}
+          >
             開始
           </Button>
           <Button variant="contained">お気に入り</Button>
