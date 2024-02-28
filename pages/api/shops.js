@@ -1,6 +1,7 @@
 import getConfig from 'next/config';
 
 const shops = async (req, res) => {
+  console.log('req.query', req.query);
   const { HOTPEPPER_API_KEY } = getConfig().serverRuntimeConfig;
 
   const query = new URLSearchParams();

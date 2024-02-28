@@ -35,6 +35,8 @@ import Slide from '@mui/material/Slide';
 
 const fetchShops = async (keyword, code) => {
   const { API_HOST } = getConfig().publicRuntimeConfig;
+  console.log('keyword', keyword);
+  console.log('code', code);
 
   const query = new URLSearchParams();
   if (keyword) query.set('keyword', keyword);
@@ -42,12 +44,13 @@ const fetchShops = async (keyword, code) => {
 
   const host = process.browser ? '' : API_HOST;
   const res = await fetch(`${host}/api/shops?${query.toString()}`);
+  // console.log(query);
+  console.log('query', query);
   return await res.json();
 };
 
 const fetchGenres = async () => {
   const { API_HOST } = getConfig().publicRuntimeConfig;
-
   const host = process.browser ? '' : API_HOST;
   const res = await fetch(`${host}/api/genres`);
   return await res.json();
@@ -57,14 +60,15 @@ const Shops = ({ firstViewShops, genres }) => {
   const [keyword, setKeyword] = React.useState('');
   const [code, setCode] = React.useState(null);
   const [shops, setShops] = React.useState([]);
-  console.log(shops);
+  // console.log(shops);
+
   useEffect(() => {
     setShops(firstViewShops);
   }, [firstViewShops]);
 
   const onSearchClick = async () => {
     const data = await fetchShops(keyword, code);
-
+    // console.log(date);
     setShops(data);
     setKeyword('');
   };
@@ -123,7 +127,15 @@ const Shops = ({ firstViewShops, genres }) => {
       >
         <FormControl fullWidth>
           <FormLabel id="genres">ジャンル</FormLabel>
-          <RadioGroup row aria-labelledby="genres" name="genres">
+          <RadioGroup
+            row
+            aria-labelledby="genres"
+            name="genres"
+            value={code}
+            onChange={(event, code) => {
+              setCode(code);
+            }}
+          >
             {genres.map((genre) => {
               return <FormControlLabel key={genre.id} value={genre.code} control={<Radio />} label={genre.name} />;
             })}
@@ -185,7 +197,6 @@ const Shops = ({ firstViewShops, genres }) => {
             <Button onClick={handleClose}>閉じる</Button>
           </DialogActions>
         </Dialog>
-        ;
       </Grid>
       <Box
         component="form"

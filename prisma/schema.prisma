@@ -15,3 +15,9 @@ model genres {
   code String @db.VarChar(255) @unique
   name String @db.VarChar(255) @unique
 }
+
+model area {
+  id Int @id @default(autoincrement())
+  code String @db.VarChar(255) @unique
+  name String @db.VarChar(255) @unique
+}
