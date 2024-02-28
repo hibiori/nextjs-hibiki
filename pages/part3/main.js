@@ -26,6 +26,12 @@ import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
 
 const fetchShops = async (keyword, code) => {
   const { API_HOST } = getConfig().publicRuntimeConfig;
@@ -36,6 +42,8 @@ const fetchShops = async (keyword, code) => {
 
   const host = process.browser ? '' : API_HOST;
   const res = await fetch(`${host}/api/shops?${query.toString()}`);
+  console.log(res);
+  console.log(`${host}/api/shops?${query.toString()}`);
   return await res.json();
 };
 
@@ -88,6 +96,19 @@ const Shops = ({ firstViewShops, genres }) => {
   const handleSelectRandom = () => {
     const selectedShop = getRandomShop(shops.filter((shop) => shop.checked));
     setRandomShop(selectedShop);
+  };
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -153,11 +174,33 @@ const Shops = ({ firstViewShops, genres }) => {
           );
         })}
       </Grid>
-      {randomShop && (
-        <Typography variant="h6" align="center" gutterBottom>
-          ランダムに選ばれたショップ: {randomShop.name}
-        </Typography>
-      )}
+      <React.Fragment>
+        <Button variant="outlined" onClick={handleClickOpen}>
+          ランダム結果
+        </Button>
+        <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              {randomShop && (
+                <Typography variant="h6" align="center" gutterBottom>
+                  ランダムに選ばれたショップ: {randomShop.name}
+                </Typography>
+              )}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>OK</Button>
+          </DialogActions>
+        </Dialog>
+      </React.Fragment>
+
       <Box
         component="form"
         noValidate
