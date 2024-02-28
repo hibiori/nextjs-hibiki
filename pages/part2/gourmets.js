@@ -76,7 +76,7 @@ const [code, setCode] = React.useState(null);
                 setKeyword(event.target.value);
             }}
             />
-                     <FormControl fullWidth>
+          <FormControl fullWidth>
            <FormLabel id="genres">ジャンル</FormLabel>
            <RadioGroup row aria-labelledby="genres" name="genres">
              {genres.map((genre) => {
