@@ -35,15 +35,18 @@ import Slide from '@mui/material/Slide';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Link from 'next/link';
+import { PrismaClient } from '@prisma/client';
 
-const fetchShops = async (keyword, code) => {
+const fetchShops = async (keyword, code, area) => {
   const { API_HOST } = getConfig().publicRuntimeConfig;
-  console.log('keyword', keyword);
-  console.log('code', code);
+  // console.log('keyword', keyword);
+  // console.log('code', code);
 
   const query = new URLSearchParams();
   if (keyword) query.set('keyword', keyword);
   if (code) query.set('code', code);
+  if (area) query.set('area', area);
 
   const host = process.browser ? '' : API_HOST;
   const res = await fetch(`${host}/api/shops?${query.toString()}`);
@@ -69,14 +72,15 @@ const Shops = ({ firstViewShops, genres, areas }) => {
   const [keyword, setKeyword] = React.useState('');
   const [code, setCode] = React.useState(null);
   const [shops, setShops] = React.useState([]);
+  const [area, setArea] = React.useState(null);
   // console.log(shops);
-  console.log('areas', areas);
+  // console.log('areas', areas);
   useEffect(() => {
     setShops(firstViewShops);
   }, [firstViewShops]);
 
   const onSearchClick = async () => {
-    const data = await fetchShops(keyword, code);
+    const data = await fetchShops(keyword, code, area);
     // console.log(date);
     setShops(data);
     setKeyword('');
@@ -121,8 +125,6 @@ const Shops = ({ firstViewShops, genres, areas }) => {
     setOpen(false);
   };
 
-  const [age, setAge] = React.useState('');
-
   return (
     <Container component="main" maxWidth="md">
       <Box
@@ -151,33 +153,19 @@ const Shops = ({ firstViewShops, genres, areas }) => {
               return <FormControlLabel key={genre.id} value={genre.code} control={<Radio />} label={genre.name} />;
             })}
           </RadioGroup>
-          {/* <RadioGroup
-            row
-            aria-labelledby="areas"
-            name="areas"
-            value={code}
-            onChange={(event) => {
-              setCode(event.target.value);
-            }}
-          >
-            {areas.map((area) => {
-              <p>aaaa</p>;
-              <FormControlLabel key={area.id} value={area.code} control={<Radio />} label={area.name} />;
-            })}
-          </RadioGroup> */}
         </FormControl>
         <FormControl fullWidth>
           <RadioGroup
             row
             aria-labelledby="areas"
             name="areas"
-            value={code}
+            value={area}
             onChange={(event) => {
-              setCode(event.target.value);
+              setArea(event.target.value);
             }}
           >
             {areas.map((area) => {
-              <FormControlLabel key={area.id} value={area.code} control={<Radio />} label={area.name} />;
+              return <FormControlLabel key={area.id} value={area.code} control={<Radio />} label={area.name} />;
             })}
           </RadioGroup>
         </FormControl>
@@ -262,7 +250,9 @@ const Shops = ({ firstViewShops, genres, areas }) => {
           >
             開始
           </Button>
-          <Button variant="contained">お気に入り</Button>
+          <Button variant="contained">
+            <Link href="/part3/favorite">お気に入り一覧へ</Link>
+          </Button>
         </Stack>
       </Box>
     </Container>

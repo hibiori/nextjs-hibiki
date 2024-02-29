@@ -21,3 +21,8 @@ model area {
   code String @db.VarChar(255) @unique
   name String @db.VarChar(255) @unique
 }
+
+model favorite {
+  id Int @id @default(autoincrement())
+  shop_id String @db.VarChar(255) @unique
+}
