@@ -32,6 +32,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 const fetchShops = async (keyword, code) => {
   const { API_HOST } = getConfig().publicRuntimeConfig;
@@ -55,13 +58,19 @@ const fetchGenres = async () => {
   const res = await fetch(`${host}/api/genres`);
   return await res.json();
 };
+const fetchAreas = async () => {
+  const { API_HOST } = getConfig().publicRuntimeConfig;
+  const host = process.browser ? '' : API_HOST;
+  const res = await fetch(`${host}/api/areas`);
+  return await res.json();
+};
 
-const Shops = ({ firstViewShops, genres }) => {
+const Shops = ({ firstViewShops, genres, areas }) => {
   const [keyword, setKeyword] = React.useState('');
   const [code, setCode] = React.useState(null);
   const [shops, setShops] = React.useState([]);
   // console.log(shops);
-
+  console.log('areas', areas);
   useEffect(() => {
     setShops(firstViewShops);
   }, [firstViewShops]);
@@ -112,6 +121,8 @@ const Shops = ({ firstViewShops, genres }) => {
     setOpen(false);
   };
 
+  const [age, setAge] = React.useState('');
+
   return (
     <Container component="main" maxWidth="md">
       <Box
@@ -132,12 +143,41 @@ const Shops = ({ firstViewShops, genres }) => {
             aria-labelledby="genres"
             name="genres"
             value={code}
-            onChange={(event, code) => {
-              setCode(code);
+            onChange={(event) => {
+              setCode(event.target.value);
             }}
           >
             {genres.map((genre) => {
               return <FormControlLabel key={genre.id} value={genre.code} control={<Radio />} label={genre.name} />;
+            })}
+          </RadioGroup>
+          {/* <RadioGroup
+            row
+            aria-labelledby="areas"
+            name="areas"
+            value={code}
+            onChange={(event) => {
+              setCode(event.target.value);
+            }}
+          >
+            {areas.map((area) => {
+              <p>aaaa</p>;
+              <FormControlLabel key={area.id} value={area.code} control={<Radio />} label={area.name} />;
+            })}
+          </RadioGroup> */}
+        </FormControl>
+        <FormControl fullWidth>
+          <RadioGroup
+            row
+            aria-labelledby="areas"
+            name="areas"
+            value={code}
+            onChange={(event) => {
+              setCode(event.target.value);
+            }}
+          >
+            {areas.map((area) => {
+              <FormControlLabel key={area.id} value={area.code} control={<Radio />} label={area.name} />;
             })}
           </RadioGroup>
         </FormControl>
@@ -232,11 +272,13 @@ const Shops = ({ firstViewShops, genres }) => {
 export const getServerSideProps = async (req) => {
   const shops = await fetchShops(req.query.keyword, req.query.code);
   const genres = await fetchGenres();
+  const areas = await fetchAreas();
 
   return {
     props: {
       firstViewShops: shops,
       genres,
+      areas,
     },
   };
 };
