@@ -79,8 +79,8 @@ const Shops = ({ firstViewShops }) => {
       <Grid container spacing={4}>
         {shops.map((shop) => {
           return (
-            <Grid item xs={4}>
-              <Card sx={{ maxWidth: 345, height: 400 }} key={shop.id}>
+            <Grid item xs={4} key={shop.id}>
+              <Card sx={{ maxWidth: 345, height: 400 }}>
                 {/* ヘッダー */}
                 <CardHeader avatar={<Avatar alt={shop.name} src={shop.logo_image}></Avatar>} title={shop.name} />
                 {/*画像  */}
